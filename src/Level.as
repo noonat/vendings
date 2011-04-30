@@ -14,11 +14,13 @@ package {
     static protected const COLOR_TREASURE:uint = 0xffffff00;
     static protected const DATA_TILE_WIDTH:uint = 8;
     static protected const DATA_TILE_HEIGHT:uint = 8;
-    static protected const TILE_WIDTH:uint = 16;
-    static protected const TILE_HEIGHT:uint = 16;
+    static protected const TILE_WIDTH:uint = 8;
+    static protected const TILE_HEIGHT:uint = 8;
     
     public var grid:PathGrid;
     public var tilemap:Tilemap;
+    public var tileWidth:uint;
+    public var tileHeight:uint;
     protected var _entities:Vector.<LevelEntity>;
     protected var _tileset:BitmapData;
     
@@ -31,6 +33,8 @@ package {
         TILE_WIDTH, TILE_HEIGHT);
       loadData(data);
       mask = grid = tilemap.createGrid([1], PathGrid) as PathGrid;
+      tileWidth = TILE_WIDTH;
+      tileHeight = TILE_HEIGHT;
     }
     
     public function createEntities(world:World):void {
@@ -42,6 +46,7 @@ package {
     }
     
     protected function loadData(data:BitmapData):void {
+      tilemap.setRect(0, 0, tilemap.columns, tilemap.rows, 0);
       for (var dy:uint = 0; dy < data.height; ++dy) {
         var y:uint = dy * DATA_TILE_HEIGHT;
         var row:uint = uint(y / TILE_HEIGHT);
@@ -51,7 +56,6 @@ package {
           var color:uint = data.getPixel32(dx, dy);
           switch (color) {
             case COLOR_EMPTY:
-              tilemap.setTile(col, row, 0);
               break;
             
             case COLOR_SOLID:
