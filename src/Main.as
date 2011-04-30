@@ -2,6 +2,8 @@ package {
   import flash.display.BitmapData;
   import net.flashpunk.Engine;
   import net.flashpunk.FP;
+  import net.flashpunk.utils.Input;
+  import net.flashpunk.utils.Key;
   
   [SWF(width="512", height="384", backgroundColor="#000000")]
   public class Main extends Engine {
@@ -29,6 +31,7 @@ package {
     
     public function loadLevel(cls:Class):void {
       _levelIndex = _levels.indexOf(cls);
+      trace('Loading level', _levelIndex, '-', cls);
       var stamp:int = ++_stamp;
       var data:BitmapData = null;
       var tileset:BitmapData = null;
@@ -61,6 +64,19 @@ package {
         _levelIndex = _levels.length - _levelIndex;
       }
       loadLevel(_levels[_levelIndex]);
+    }
+    
+    override public function update():void {
+      super.update();
+      ENV::debug {
+        if (Input.pressed(Key.N)) {
+          loadNextLevel();
+        } else if (Input.pressed(Key.B)) {
+          loadPrevLevel();
+        } else if (Input.pressed(Key.R)) {
+          loadLevel(_levels[_levelIndex]);
+        }
+      }
     }
   }
 }
