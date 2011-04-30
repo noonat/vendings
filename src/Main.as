@@ -30,24 +30,24 @@ package {
     public function loadLevel(cls:Class):void {
       _levelIndex = _levels.indexOf(cls);
       var stamp:int = ++_stamp;
-      var level:BitmapData = null;
+      var data:BitmapData = null;
       var tileset:BitmapData = null;
       Assets.getBitmap(cls, function(bitmap:BitmapData):void {
-        level = bitmap;
+        data = bitmap;
         if (_stamp == stamp && tileset != null) {
-          loadLevelFinish(level, tileset);
+          loadLevelFinish(data, tileset);
         }
       });
       Assets.getBitmap(TILESET, function(bitmap:BitmapData):void {
         tileset = bitmap;
-        if (_stamp == stamp && level != null) {
-          loadLevelFinish(level, tileset);
+        if (_stamp == stamp && data != null) {
+          loadLevelFinish(data, tileset);
         }
       });
     }
     
-    protected function loadLevelFinish(level:BitmapData, tileset:BitmapData):void {
-      FP.world = new Game(level, tileset);
+    protected function loadLevelFinish(data:BitmapData, tileset:BitmapData):void {
+      FP.world = new Game(new Level(data, tileset));
     }
     
     public function loadNextLevel():void {
