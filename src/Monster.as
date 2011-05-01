@@ -21,7 +21,6 @@ package {
     protected var _thinkTimer:Alarm;
     protected var _wander:Boolean;
     protected var _wanderAngle:Number;
-    protected var _wanderCollideAngle:Number;
     
     function Monster() {
       super(0, 0);
@@ -63,7 +62,6 @@ package {
       
       _wander = false;
       _wanderAngle = 0;
-      _wanderCollideAngle = 90;
     }
     
     protected function calcStats():void {
@@ -172,7 +170,25 @@ package {
     
     protected function thinkCollide(hit:Entity):Boolean {
       if (hit.type === 'solid') {
-        _wanderAngle = FP.normalizeAngle(_wanderAngle + _wanderCollideAngle);
+        var level:Level = (world as Game).level;
+        var angle:Number = _wanderAngle - 90;
+        FP.angleXY(FP.point, angle, Level.TILE, x, y);
+        if (!level.grid.getTile(int(FP.point.x / Level.TILE), int(FP.point.y / Level.TILE))) {
+          _wanderAngle = angle;
+        } else {
+          angle = _wanderAngle + 90;
+          FP.angleXY(FP.point, angle, Level.TILE, x, y);
+          if (!level.grid.getTile(int(FP.point.x / Level.TILE), int(FP.point.y / Level.TILE))) {
+            _wanderAngle = angle;
+          } else {
+            angle = _wanderAngle + 180;
+            FP.angleXY(FP.point, angle, Level.TILE, x, y);
+            if (!level.grid.getTile(int(FP.point.x / Level.TILE), int(FP.point.y / Level.TILE))) {
+              _wanderAngle = angle;
+            }
+          }
+        }
+        _wanderAngle = FP.normalizeAngle(_wanderAngle);
       }
       return true;
     }
