@@ -49,7 +49,7 @@ package {
         _buttons.push(button);
         item.x = ix + item.originX;
         item.y = iy + item.originY;
-        iy += item.height;
+        iy += item.height + Level.TILE;
         _rect.width = Math.max(_rect.width, item.right);
         _rect.height = Math.max(_rect.height, item.bottom);
       }

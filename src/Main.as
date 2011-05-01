@@ -61,7 +61,7 @@ package {
     }
     
     protected function loadLevelFinish(data:BitmapData, tileset:BitmapData, itemClasses:Array):void {
-      FP.world = new Game(new Level(data, tileset), [WoodenSword]);
+      FP.world = new Game(new Level(data, tileset), itemClasses);
     }
     
     public function loadNextLevel():void {

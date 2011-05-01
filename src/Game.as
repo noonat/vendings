@@ -63,7 +63,7 @@ package {
     }
     
     protected function onVendorItem(item:Item):void {
-      warrior.boon = create(item.getClass()) as Item;
+      warrior.boon = create(item.getClass(), false) as Item;
       _vendorMenu.hide();
     }
     
