@@ -12,9 +12,10 @@ package {
     protected var _thinkTimer:Number;
     
     function Warrior() {
-      super(0, 0, Image.createRect(16, 16, 0x00ff00));
+      super(0, 0, Image.createRect(Level.TILE, Level.TILE, 0x00ff00));
       (graphic as Image).centerOO();
-      setHitbox(16, 16, 8, 8);
+      setHitbox(Level.TILE, Level.TILE);
+      centerOrigin();
       type = 'warrior';
       _thinkDuration = 1;
       _thinkTimer = 0;
@@ -39,10 +40,8 @@ package {
         var treasure:Treasure = world.typeFirst('treasure') as Treasure;
         var path:Path = level.grid.findPath(x, y, treasure.x, treasure.y);
         while (path != null) {
-          var px:Number = int(path.x / level.tileWidth) * level.tileWidth;
-          var py:Number = int(path.y / level.tileHeight) * level.tileHeight;
-          if (distanceToPoint(px, py) > level.tileWidth) {
-            moveTowards(px, py, level.tileWidth, 'solid', true);
+          if (distanceToPoint(path.x, path.y) >= Level.TILE) {
+            moveTowards(path.x, path.y, Level.TILE, 'solid', true);
             break;
           }
           path = path.next;

@@ -7,9 +7,10 @@ package {
     protected var _health:Health;
     
     function Monster() {
-      super(0, 0, Image.createRect(16, 16, 0x0000ff));
+      super(0, 0, Image.createRect(Level.TILE, Level.TILE, 0x0000ff));
       (graphic as Image).centerOO();
-      setHitbox(16, 16, 8, 8);
+      setHitbox(Level.TILE, Level.TILE);
+      centerOrigin();
       type = 'monster';
       addComponent('health', _health = new Health());
     }

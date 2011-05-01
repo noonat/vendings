@@ -4,9 +4,9 @@ package {
   
   public class Item extends Entity {
     function Item() {
-      super(0, 0, Image.createRect(16, 16, 0x00ffff));
+      super(0, 0, Image.createRect(8, 8, 0x00ffff));
       (graphic as Image).centerOO();
-      setHitbox(16, 16, 8, 8);
+      setHitbox(8, 8, 4, 4);
       type = 'item';
     }
   }
