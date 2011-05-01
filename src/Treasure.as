@@ -13,7 +13,9 @@ package {
     }
     
     public function collected(warrior:Warrior):void {
-      world.recycle(this);
+      collidable = false;
+      visible = false;
+      (world as Game).state.onTreasureCollected.dispatch(this);
     }
   }
 }

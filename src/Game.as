@@ -10,10 +10,32 @@ package {
   
   public class Game extends World {
     public var level:Level;
+    public var state:GameState;
+    public var treasure:Treasure;
     
     function Game(level:Level) {
       add(this.level = level);
       level.createEntities(this);
+      state = new GameState(this);
+      state.onGameWon.add(function():void {
+        trace('winnar!');
+      });
+      state.onGameLost.add(function():void {
+        trace('you lost, broseph');
+      });
+    }
+    
+    override public function begin():void {
+      super.begin();
+      state.onBegin.dispatch();
+      if (typeCount('treasure') === 0) {
+        trace('WARNING: treasure missing from level');
+      }
+    }
+    
+    override public function end():void {
+      super.end();
+      state.onEnd.dispatch();
     }
     
     override public function update():void {
