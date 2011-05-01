@@ -17,6 +17,7 @@ package {
     protected var _hurtTimer:Alarm;
     protected var _image:Image;
     protected var _inventory:Inventory;
+    protected var _justBlocked:Boolean;
     protected var _target:Entity;
     protected var _thinkDuration:Number;
     protected var _thinkTimer:Alarm;
@@ -62,8 +63,13 @@ package {
       addTween(_thinkTimer);
       
       _hits = [];
+      _justBlocked = false;
       _wander = false;
       _wanderAngle = 0;
+    }
+    
+    public function blocked(entity:Entity):void {
+      _justBlocked = true;
     }
     
     protected function calcStats():void {
@@ -174,25 +180,7 @@ package {
     
     protected function thinkCollide(hit:Entity):Boolean {
       if (hit.type === 'solid') {
-        var level:Level = (world as Game).level;
-        var angle:Number = _wanderAngle - 90;
-        FP.angleXY(FP.point, angle, Level.TILE, x, y);
-        if (!level.grid.getTile(FP.point.x, FP.point.y)) {
-          _wanderAngle = angle;
-        } else {
-          angle = _wanderAngle + 90;
-          FP.angleXY(FP.point, angle, Level.TILE, x, y);
-          if (!level.grid.getTile(FP.point.x, FP.point.y)) {
-            _wanderAngle = angle;
-          } else {
-            angle = _wanderAngle + 180;
-            FP.angleXY(FP.point, angle, Level.TILE, x, y);
-            if (!level.grid.getTile(FP.point.x, FP.point.y)) {
-              _wanderAngle = angle;
-            }
-          }
-        }
-        _wanderAngle = FP.normalizeAngle(_wanderAngle);
+        thinkMoveTurn();
       }
       return true;
     }
@@ -209,7 +197,7 @@ package {
           }
           path = path.next;
         }
-      } else if (_wander) {
+      } else if (_wander && !_justBlocked) {
         FP.angleXY(FP.point, _wanderAngle, Level.TILE, x, y);
         moved = thinkMoveStep(FP.point.x, FP.point.y);
       }
@@ -226,6 +214,28 @@ package {
       }
     }
     
+    protected function thinkMoveTurn():void {
+      var level:Level = (world as Game).level;
+      var angle:Number = _wanderAngle - 90;
+      FP.angleXY(FP.point, angle, Level.TILE, x, y);
+      if (!level.grid.getTile(FP.point.x, FP.point.y)) {
+        _wanderAngle = angle;
+      } else {
+        angle = _wanderAngle + 90;
+        FP.angleXY(FP.point, angle, Level.TILE, x, y);
+        if (!level.grid.getTile(FP.point.x, FP.point.y)) {
+          _wanderAngle = angle;
+        } else {
+          angle = _wanderAngle + 180;
+          FP.angleXY(FP.point, angle, Level.TILE, x, y);
+          if (!level.grid.getTile(FP.point.x, FP.point.y)) {
+            _wanderAngle = angle;
+          }
+        }
+      }
+      _wanderAngle = FP.normalizeAngle(_wanderAngle);
+    }
+    
     protected function thinkTriggers():void {
       _hits.length = 0;
       collideInto('trigger', x, y, _hits);
@@ -234,6 +244,11 @@ package {
           trigger.triggered(this);
         }
       }
+    }
+    
+    override public function update():void {
+      super.update();
+      _justBlocked = false
     }
   }
 }

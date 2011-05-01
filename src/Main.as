@@ -31,7 +31,7 @@ package {
     function Main() {
       super(256, 192, 60);
       FP.screen.scale = 2;
-      FP.console.enable();
+      // FP.console.enable();
     }
     
     override public function init():void {

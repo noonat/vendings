@@ -24,7 +24,12 @@ package {
     protected function onMotionFinished():void {
       if (_target !== null) {
         var inventory:Inventory = _target.getComponent('inventory') as Inventory;
-        if (inventory === null || !inventory.hasType('shield')) {
+        if (inventory !== null && inventory.hasType('shield')) {
+          var monster:Monster = _target as Monster;
+          if (monster !== null) {
+            monster.blocked(this);
+          }
+        } else {
           var health:Health = _target.getComponent('health') as Health;
           if (health !== null) {
             health.hurt(isNaN(_damage) ? health.health : _damage, this);

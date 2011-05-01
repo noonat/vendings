@@ -57,6 +57,8 @@ package {
     override protected function thinkCollide(entity:Entity):Boolean {
       if (entity.type === 'monster') {
         _target = entity;
+      } else if (entity.type === 'warrior') {
+        thinkMoveTurn();
       }
       return super.thinkCollide(entity);
     }

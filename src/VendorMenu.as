@@ -12,8 +12,8 @@ package {
     protected var _items:Vector.<Item>;
     protected var _rect:Rectangle;
     
-    function VendorMenu(itemClasses:Array, x:Number, y:Number, width:Number, height:Number) {
-      super(x, y, width, height);
+    function VendorMenu(itemClasses:Array, x:Number, y:Number) {
+      super(x, y, 1, 1);
       type = 'menu';
       layer = Layers.MENU;
       
@@ -49,17 +49,18 @@ package {
         _buttons.push(button);
         item.x = ix + item.originX;
         item.y = iy + item.originY;
-        iy += item.height + Level.TILE;
+        ix += item.width + Level.TILE;
         _rect.width = Math.max(_rect.width, item.right);
         _rect.height = Math.max(_rect.height, item.bottom);
       }
-      _rect.x = x + (width - _rect.width) / 2;
-      _rect.y = y + (height - _rect.height) / 2;
+      _rect.x = x - (_rect.width / 2);
+      _rect.y = y - (_rect.height / 2);
       for each (item in _items) {
         item.x += _rect.x;
         item.y += _rect.y;
       }
       _rect.inflate(Level.TILE, Level.TILE);
+      setHitbox(_rect.width, _rect.height);
     }
     
     public function hide():void {

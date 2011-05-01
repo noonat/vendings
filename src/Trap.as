@@ -51,31 +51,53 @@ package {
       _triggers.length = 0;
     }
     
-    protected function traceTrigger(signX:int, signY:int):Trigger {
+    protected function traceDirection(types:Array, signX:int, signY:int, out:Rectangle=null):Entity {
       if (signX === 0 && signY === 0) {
         return null;
       }
+      var hit:Entity;
       var grid:Grid = (world as Game).level.grid;
       var gx1:int = Math.floor(x / Level.TILE) + signX;
       var gy1:int = Math.floor(y / Level.TILE) + signY;
       var gx2:int = gx1;
       var gy2:int = gy1;
       while (gx2 >= 0 && gy2 >= 0 && gx2 < grid.columns && gy2 < grid.rows) {
-        if (grid.getTile(gx2 * Level.TILE, gy2 * Level.TILE)) {
+        for each (var type:String in types) {
+          hit = world.collideRect(
+            type, gx2 * Level.TILE, gy2 * Level.TILE, Level.TILE, Level.TILE);
+          if (hit !== null) {
+            break;
+          }
+        }
+        if (hit !== null) {
           break;
-        } else {
-          gx2 += signX;
-          gy2 += signY;
+        }
+        gx2 += signX;
+        gy2 += signY;
+      }
+      if (out !== null) {
+        out.x = out.y = out.width = out.height = 0;
+        if (gx1 !== gx2 || gy1 !== gy2) {
+          out.x = (gx1 < gx2 ? gx1 : gx2) * Level.TILE;
+          out.y = (gy1 < gy2 ? gy1 : gy2) * Level.TILE;
+          out.width = (Math.abs(gx2 - gx1) || 1) * Level.TILE;
+          out.height = (Math.abs(gy2 - gy1) || 1) * Level.TILE;
         }
       }
-      if (gx1 === gx2 && gy1 === gy2) {
-        return null;
+      return hit;
+    }
+    
+    protected function traceTrigger(signX:int, signY:int):Trigger {
+      var bounds:Rectangle = new Rectangle();
+      traceDirection(['solid'], signX, signY, bounds);
+      if (bounds.width > 0 && bounds.height > 0) {
+        var trigger:Trigger  = new Trigger(
+          bounds.x, bounds.y, bounds.width, bounds.height);
+        trigger.signX = signX;
+        trigger.signY = signY;
+        return trigger;
       } else {
-        var x:Number = (gx1 < gx2 ? gx1 : gx2) * Level.TILE;
-        var y:Number = (gy1 < gy2 ? gy1 : gy2) * Level.TILE;
-        var w:Number = (Math.abs(gx2 - gx1) || 1) * Level.TILE;
-        var h:Number = (Math.abs(gy2 - gy1) || 1) * Level.TILE;
-        return new Trigger(x, y, w, h);
+        return null;
       }
     }
   }

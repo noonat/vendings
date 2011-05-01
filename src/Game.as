@@ -33,7 +33,7 @@ package {
       add(this.level = level);
       level.createEntities(this);
       
-      _vendorMenu = new VendorMenu(itemClasses, 0, 0, FP.width, FP.height);
+      _vendorMenu = new VendorMenu(itemClasses, FP.width / 2, FP.height - 16);
       _vendorMenu.onItem.add(onVendorItem);
       _vendorMenu.show();
       add(_vendorMenu);
@@ -64,7 +64,10 @@ package {
     
     protected function onVendorItem(item:Item):void {
       warrior.boon = create(item.getClass(), false) as Item;
-      _vendorMenu.hide();
+      warrior = create(Warrior) as Warrior;
+      warrior.x = warriorSpawnX;
+      warrior.y = warriorSpawnY;
+      // _vendorMenu.hide();
     }
     
     override public function update():void {

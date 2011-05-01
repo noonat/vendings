@@ -5,6 +5,8 @@ package {
   
   public class Trigger extends Entity {
     public var onTriggered:Signal;
+    public var signX:int;
+    public var signY:int;
     public var triggerTypes:Array;
     
     function Trigger(x:Number, y:Number, width:Number, height:Number):void {
