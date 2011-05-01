@@ -5,28 +5,25 @@ package {
   import net.flashpunk.graphics.Image;
   import net.flashpunk.pathfinding.Path;
   
-  public class Warrior extends Entity {
-    protected var _health:Health;
+  public class Warrior extends Monster {
     protected var _item:Item;
-    protected var _thinkDuration:Number;
-    protected var _thinkTimer:Number;
     
     function Warrior() {
-      super(0, 0, Image.createRect(Level.TILE, Level.TILE, 0x00ff00));
-      (graphic as Image).centerOO();
-      setHitbox(Level.TILE, Level.TILE);
-      centerOrigin();
-      layer = Layers.WARRIORS;
+      super();
       type = 'warrior';
+      layer = Layers.WARRIORS;
       _thinkDuration = 0.5;
-      _thinkTimer = 0;
-      addComponent('health', _health = new Health());
+    }
+    
+    override public function created():void {
+      super.created();
+      _color = 0x00ff00;
     }
     
     protected function hitMonster(monster:Monster):void {
       var health:Health = monster.getComponent('health') as Health;
       if (health != null) {
-        health.hurt(1);
+        health.hurt(1, this);
       }
     }
     
@@ -41,12 +38,11 @@ package {
     public function set item(value:Item):void {
       if (_item != value) {
         _item = value;
-        think();
+        onThink();
       }
     }
     
-    protected function think():void {
-      _thinkTimer = _thinkDuration;
+    override protected function think():void {
       if (_item != null) {
         var level:Level = (world as Game).level;
         var treasure:Treasure = world.typeFirst('treasure') as Treasure;
@@ -67,13 +63,6 @@ package {
           }
           path = path.next;
         }
-      }
-    }
-    
-    override public function update():void {
-      _thinkTimer -= FP.elapsed;
-      if (_thinkTimer <= 0) {
-        think();
       }
     }
   }
