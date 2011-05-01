@@ -58,9 +58,9 @@ package {
     
     protected function onHurt(damage:Number, hurter:Entity):void {
       _hurtTimer.reset(_hurtDuration);
-      if (hurter != null) {
+      if (hurter !== null) {
         var health:Health = hurter.getComponent('health') as Health;
-        if (health != null && health.alive) {
+        if (health !== null && health.alive) {
           _target = hurter;
         }
       }

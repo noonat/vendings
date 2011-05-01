@@ -37,13 +37,13 @@ package {
       var tileset:BitmapData = null;
       Assets.getBitmap(cls, function(bitmap:BitmapData):void {
         data = bitmap;
-        if (_stamp == stamp && tileset != null) {
+        if (_stamp === stamp && tileset !== null) {
           loadLevelFinish(data, tileset);
         }
       });
       Assets.getBitmap(TILESET, function(bitmap:BitmapData):void {
         tileset = bitmap;
-        if (_stamp == stamp && data != null) {
+        if (_stamp === stamp && data !== null) {
           loadLevelFinish(data, tileset);
         }
       });
