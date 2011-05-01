@@ -6,11 +6,14 @@ package {
   import net.flashpunk.tweens.misc.Alarm;
   
   public class Monster extends Entity {
+    public var stats:Stats;
+    protected var _baseStats:Stats;
     protected var _color:uint;
     protected var _health:Health;
     protected var _hurtDuration:Number;
     protected var _hurtTimer:Alarm;
     protected var _image:Image;
+    protected var _inventory:Inventory;
     protected var _target:Entity;
     protected var _thinkDuration:Number;
     protected var _thinkTimer:Alarm;
@@ -26,11 +29,22 @@ package {
       _image.centerOO();
       addGraphic(_image);
       
-      _health = new Health(3);
+      stats = new Stats();
+      _baseStats = new Stats();
+      _baseStats.damage = 1;
+      _baseStats.health = 5;
+      calcStats();
+      
+      _health = new Health(stats.health);
       _health.onHurt.add(onHurt);
       _health.onKilled.add(onKilled);
       _health.recycleKilled = false;
       addComponent('health', _health);
+      
+      _inventory = new Inventory();
+      _inventory.onAdded.add(onItemAdded);
+      _inventory.onRemoved.add(onItemRemoved);
+      addComponent('inventory', _inventory);
       
       _hurtDuration = 0.5;
       _hurtTimer = new Alarm(0, onHurtFinished);
@@ -41,12 +55,28 @@ package {
       addTween(_thinkTimer);
     }
     
+    protected function calcStats():void {
+      stats.reset();
+      stats.add(_baseStats);
+      if (_inventory) {
+        for each (var item:Item in _inventory.items) {
+          stats.add(item.stats);
+        }
+      }
+      if (_health) {
+        var percent:Number = _health.healthPercent;
+        _health.maxHealth = stats.health;
+        _health.health = _health.maxHealth * percent;
+      }
+    }
+    
     override public function created():void {
       super.created();
       collidable = true;
       _color = 0x0000ff;
       _hurtTimer.reset(0.01);
       _thinkTimer.reset(0.01);
+      calcStats();
     }
     
     override public function render():void {
@@ -68,6 +98,14 @@ package {
     
     protected function onHurtFinished():void {
       _image.color = _color;
+    }
+    
+    protected function onItemAdded(item:Item):void {
+      calcStats();
+    }
+    
+    protected function onItemRemoved(item:Item):void {
+      calcStats();
     }
     
     protected function onKilled(killer:Entity):void {

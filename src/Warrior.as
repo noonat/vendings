@@ -6,25 +6,44 @@ package {
   import net.flashpunk.pathfinding.Path;
   
   public class Warrior extends Monster {
-    protected var _item:Item;
+    protected var _boon:Item;
     
     function Warrior() {
       super();
       type = 'warrior';
       layer = Layers.WARRIORS;
+      _baseStats.damage = 1;
+      _baseStats.health = 3;
       _thinkDuration = 0.5;
+    }
+    
+    public function get boon():Item {
+      return _boon;
+    }
+    
+    public function set boon(value:Item):void {
+      if (_boon !== value) {
+        if (_boon !== null) {
+          _inventory.remove(_boon);
+        }
+        _boon = value;
+        if (_boon !== null) {
+          _inventory.add(_boon);
+        }
+        onThink();
+      }
     }
     
     override public function created():void {
       super.created();
+      _boon = null;
       _color = 0x00ff00;
-      _item = null;
     }
     
     protected function hitMonster(monster:Monster):void {
       var health:Health = monster.getComponent('health') as Health;
       if (health !== null) {
-        health.hurt(1, this);
+        health.hurt(stats.damage, this);
       }
     }
     
@@ -32,19 +51,8 @@ package {
       
     }
     
-    public function get item():Item {
-      return _item;
-    }
-    
-    public function set item(value:Item):void {
-      if (_item !== value) {
-        _item = value;
-        onThink();
-      }
-    }
-    
     override protected function think():void {
-      if (_item === null) {
+      if (_boon === null) {
         return;
       }
       var level:Level = (world as Game).level;

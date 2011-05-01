@@ -1,4 +1,5 @@
 package {
+  import items.*;
   import flash.display.BitmapData;
   import net.flashpunk.Entity;
   import net.flashpunk.graphics.Tilemap;
@@ -19,7 +20,7 @@ package {
       super.update();
       if (Input.pressed(Key.Z)) {
         var warrior:Warrior = typeFirst('warrior') as Warrior;
-        warrior.item = new Item();
+        warrior.boon = new WoodenSword();
       }
     }
   }
