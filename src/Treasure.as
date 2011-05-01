@@ -12,6 +12,12 @@ package {
       type = 'treasure';
     }
     
+    override public function created():void {
+      super.created();
+      collidable = true;
+      visible = true;
+    }
+    
     public function collected(warrior:Warrior):void {
       collidable = false;
       visible = false;
