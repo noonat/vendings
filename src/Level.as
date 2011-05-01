@@ -13,6 +13,7 @@ package {
     static protected const COLOR_WARRIOR:uint = 0xff00ff00;
     static protected const COLOR_MONSTER:uint = 0xff0000ff;
     static protected const COLOR_TREASURE:uint = 0xffffff00;
+    static protected const COLOR_ARROW_TRAP:uint = 0xff00ffff;
     static protected const DATA_TILE:uint = 8;
     
     public var grid:PathGrid;
@@ -25,11 +26,12 @@ package {
       layer = Layers.LEVEL;
       _entities = new Vector.<LevelEntity>();
       _tileset = tileset;
-      graphic = tilemap = new Tilemap(tileset,
-        data.width * DATA_TILE, data.height * DATA_TILE,
-        TILE, TILE);
+      graphic = tilemap = new Tilemap(
+        tileset, data.width * TILE, data.height * TILE, TILE, TILE);
+      tilemap.usePositions = true;
       loadData(data);
       mask = grid = tilemap.createGrid([1], PathGrid) as PathGrid;
+      grid.usePositions = true;
     }
     
     public function createEntities(world:World):void {
@@ -41,20 +43,18 @@ package {
     }
     
     protected function loadData(data:BitmapData):void {
-      tilemap.setRect(0, 0, tilemap.columns, tilemap.rows, 0);
+      tilemap.setRect(0, 0, tilemap.width, tilemap.height, 0);
       for (var dy:uint = 0; dy < data.height; ++dy) {
         var y:uint = dy * DATA_TILE;
-        var row:uint = uint(y / TILE);
         for (var dx:uint = 0; dx < data.width; ++dx) {
           var x:uint = dx * DATA_TILE;
-          var col:uint = uint(x / TILE);
           var color:uint = data.getPixel32(dx, dy);
           switch (color) {
             case COLOR_EMPTY:
               break;
             
             case COLOR_SOLID:
-              tilemap.setTile(col, row, 1);
+              tilemap.setTile(x, y, 1);
               break;
             
             case COLOR_VENDOR:
@@ -71,6 +71,11 @@ package {
             
             case COLOR_TREASURE:
               _entities.push(new LevelEntity(Treasure, x, y));
+              break;
+            
+            case COLOR_ARROW_TRAP:
+              tilemap.setTile(x, y, 1);
+              _entities.push(new LevelEntity(ArrowTrap, x, y));
               break;
             
             default:

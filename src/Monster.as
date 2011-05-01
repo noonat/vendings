@@ -12,6 +12,7 @@ package {
     protected var _collideTypes:Array;
     protected var _color:uint;
     protected var _health:Health;
+    protected var _hits:Array;
     protected var _hurtDuration:Number;
     protected var _hurtTimer:Alarm;
     protected var _image:Image;
@@ -29,7 +30,7 @@ package {
       setHitbox(Level.TILE, Level.TILE);
       centerOrigin();
       
-      _collideTypes = ['trap', 'warrior', 'solid'];
+      _collideTypes = ['warrior', 'solid'];
       
       _image = Image.createRect(Level.TILE, Level.TILE, 0xffffff);
       _image.centerOO();
@@ -60,6 +61,7 @@ package {
       _thinkTimer = new Alarm(0, onThink);
       addTween(_thinkTimer);
       
+      _hits = [];
       _wander = false;
       _wanderAngle = 0;
     }
@@ -115,11 +117,8 @@ package {
     
     protected function onHurt(damage:Number, hurter:Entity):void {
       _hurtTimer.reset(_hurtDuration);
-      if (hurter !== null) {
-        var health:Health = hurter.getComponent('health') as Health;
-        if (health !== null && health.alive) {
-          _target = hurter;
-        }
+      if (canAttack(hurter)) {
+        _target = hurter;
       }
     }
     
@@ -155,6 +154,7 @@ package {
     
     protected function think():void {
       thinkMove();
+      thinkTriggers();
       if (_target !== null) {
         thinkAttack();
       }
@@ -173,17 +173,17 @@ package {
         var level:Level = (world as Game).level;
         var angle:Number = _wanderAngle - 90;
         FP.angleXY(FP.point, angle, Level.TILE, x, y);
-        if (!level.grid.getTile(int(FP.point.x / Level.TILE), int(FP.point.y / Level.TILE))) {
+        if (!level.grid.getTile(FP.point.x, FP.point.y)) {
           _wanderAngle = angle;
         } else {
           angle = _wanderAngle + 90;
           FP.angleXY(FP.point, angle, Level.TILE, x, y);
-          if (!level.grid.getTile(int(FP.point.x / Level.TILE), int(FP.point.y / Level.TILE))) {
+          if (!level.grid.getTile(FP.point.x, FP.point.y)) {
             _wanderAngle = angle;
           } else {
             angle = _wanderAngle + 180;
             FP.angleXY(FP.point, angle, Level.TILE, x, y);
-            if (!level.grid.getTile(int(FP.point.x / Level.TILE), int(FP.point.y / Level.TILE))) {
+            if (!level.grid.getTile(FP.point.x, FP.point.y)) {
               _wanderAngle = angle;
             }
           }
@@ -219,6 +219,16 @@ package {
         return true;
       } else {
         return false;
+      }
+    }
+    
+    protected function thinkTriggers():void {
+      _hits.length = 0;
+      collideInto('trigger', x, y, _hits);
+      for each (var trigger:Trigger in _hits) {
+        if (trigger.triggerTypes.indexOf(type) !== -1) {
+          trigger.triggered(this);
+        }
       }
     }
   }
