@@ -70,6 +70,31 @@ package {
       }
     }
     
+    protected function canAttack(entity:Entity):Boolean {
+      if (entity === null) {
+        return false;
+      }
+      var health:Health = entity.getComponent('health') as Health;
+      if (health === null || health.dead) {
+        return false;
+      }
+      var x:Number = this.x - originX;
+      var y:Number = this.y - originY;
+      var distanceX:Number = FP.distanceRects(
+        x, y, width, height,
+        entity.x - entity.originX, y, entity.width, entity.height);
+      if (distanceX > stats.range * Level.TILE) {
+        return false;
+      }
+      var distanceY:Number = FP.distanceRects(
+        x, y, width, height,
+        x, entity.y - entity.originY, entity.width, entity.height);
+      if (distanceY > stats.range * Level.TILE) {
+        return false;
+      }
+      return true;
+    }
+    
     override public function created():void {
       super.created();
       collidable = true;
@@ -77,13 +102,6 @@ package {
       _hurtTimer.reset(0.01);
       _thinkTimer.reset(0.01);
       calcStats();
-    }
-    
-    override public function render():void {
-      if (_hurtTimer.active) {
-        _image.color = FP.colorLerp(_color, 0xff0000, 1.0 - _hurtTimer.percent)
-      }
-      super.render();
     }
     
     protected function onHurt(damage:Number, hurter:Entity):void {
@@ -111,6 +129,7 @@ package {
     protected function onKilled(killer:Entity):void {
       collidable = false;
       _color = 0x000000;
+      _thinkTimer.reset(0);
     }
     
     protected function onThink():void {
@@ -118,7 +137,29 @@ package {
       think();
     }
     
+    override public function render():void {
+      if (_hurtTimer.active) {
+        _image.color = FP.colorLerp(_color, 0xff0000, 1.0 - _hurtTimer.percent)
+      }
+      super.render();
+    }
+    
     protected function think():void {
+      thinkMove();
+      if (_target !== null) {
+        thinkAttack();
+      }
+    }
+    
+    protected function thinkAttack():void {
+      if (canAttack(_target)) {
+        (_target.getComponent('health') as Health).hurt(stats.damage, this);
+      } else {
+        _target = null;
+      }
+    }
+    
+    protected function thinkMove():void {
       
     }
   }

@@ -40,7 +40,14 @@ package {
       _color = 0x00ff00;
     }
     
-    override protected function think():void {
+    protected function thinkCollide(entity:Entity):Boolean {
+      if (entity.type === 'monster') {
+        _target = entity;
+      }
+      return true;
+    }
+    
+    override protected function thinkMove():void {
       if (_boon === null) {
         return;
       }
@@ -62,16 +69,6 @@ package {
         }
         path = path.next;
       }
-    }
-    
-    protected function thinkCollide(entity:Entity):Boolean {
-      if (entity.type === 'monster') {
-        var health:Health = entity.getComponent('health') as Health;
-        if (health !== null) {
-          health.hurt(stats.damage, this);
-        }
-      }
-      return true;
     }
     
     override public function update():void {
