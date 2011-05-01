@@ -40,17 +40,6 @@ package {
       _color = 0x00ff00;
     }
     
-    protected function hitMonster(monster:Monster):void {
-      var health:Health = monster.getComponent('health') as Health;
-      if (health !== null) {
-        health.hurt(stats.damage, this);
-      }
-    }
-    
-    protected function hitSolid(entity:Entity):void {
-      
-    }
-    
     override protected function think():void {
       if (_boon === null) {
         return;
@@ -65,18 +54,24 @@ package {
         var px:Number = path.x;
         var py:Number = path.y;
         if (distanceToPoint(path.x, path.y) >= Level.TILE) {
-          var hit:Entity = collideTypes(['monster', 'solid'], px, py);
-          if (hit === null) {
+          var hit:Entity = collideTypes(['monster', 'trap', 'solid'], px, py);
+          if (hit === null || !thinkCollide(hit)) {
             moveTo(px, py);
-          } else if (hit.type == 'monster') {
-            hitMonster(hit as Monster);
-          } else if (hit.type == 'solid') {
-            hitSolid(hit)
           }
           break;
         }
         path = path.next;
       }
+    }
+    
+    protected function thinkCollide(entity:Entity):Boolean {
+      if (entity.type === 'monster') {
+        var health:Health = entity.getComponent('health') as Health;
+        if (health !== null) {
+          health.hurt(stats.damage, this);
+        }
+      }
+      return true;
     }
     
     override public function update():void {
