@@ -36,6 +36,7 @@ package {
     override public function end():void {
       super.end();
       state.onEnd.dispatch();
+      recycleAll();
     }
     
     override public function update():void {

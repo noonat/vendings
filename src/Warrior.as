@@ -3,10 +3,11 @@ package {
   import net.flashpunk.Entity;
   import net.flashpunk.FP;
   import net.flashpunk.graphics.Image;
-  import net.flashpunk.pathfinding.Path;
   
   public class Warrior extends Monster {
     protected var _boon:Item;
+    protected var _wanderX:Number = 0;
+    protected var _wanderY:Number = 0;
     
     function Warrior() {
       super();
@@ -14,6 +15,7 @@ package {
       layer = Layers.WARRIORS;
       _baseStats.damage = 1;
       _baseStats.health = 3;
+      _collideTypes = ['monster', 'trap', 'warrior', 'solid'];
       _thinkDuration = 0.5;
     }
     
@@ -29,9 +31,15 @@ package {
         _boon = value;
         if (_boon !== null) {
           _inventory.add(_boon);
+          beginWander();
         }
         onThink();
       }
+    }
+    
+    protected function beginWander():void {
+      _wander = true;
+      _wanderAngle = 0;
     }
     
     override public function created():void {
@@ -40,35 +48,17 @@ package {
       _color = 0x00ff00;
     }
     
-    protected function thinkCollide(entity:Entity):Boolean {
+    override protected function think():void {
+      if (_boon !== null) {
+        super.think();
+      }
+    }
+    
+    override protected function thinkCollide(entity:Entity):Boolean {
       if (entity.type === 'monster') {
         _target = entity;
       }
-      return true;
-    }
-    
-    override protected function thinkMove():void {
-      if (_boon === null) {
-        return;
-      }
-      var level:Level = (world as Game).level;
-      var goal:Entity = world.typeFirst('treasure');
-      if (goal === null) {
-        return;
-      }
-      var path:Path = level.grid.findPath(x, y, goal.x, goal.y);
-      while (path !== null) {
-        var px:Number = path.x;
-        var py:Number = path.y;
-        if (distanceToPoint(path.x, path.y) >= Level.TILE) {
-          var hit:Entity = collideTypes(['monster', 'trap', 'solid'], px, py);
-          if (hit === null || !thinkCollide(hit)) {
-            moveTo(px, py);
-          }
-          break;
-        }
-        path = path.next;
-      }
+      return super.thinkCollide(entity);
     }
     
     override public function update():void {

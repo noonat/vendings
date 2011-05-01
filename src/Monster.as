@@ -3,11 +3,13 @@ package {
   import net.flashpunk.Entity;
   import net.flashpunk.FP;
   import net.flashpunk.graphics.Image;
+  import net.flashpunk.pathfinding.Path;
   import net.flashpunk.tweens.misc.Alarm;
   
   public class Monster extends Entity {
     public var stats:Stats;
     protected var _baseStats:Stats;
+    protected var _collideTypes:Array;
     protected var _color:uint;
     protected var _health:Health;
     protected var _hurtDuration:Number;
@@ -17,6 +19,9 @@ package {
     protected var _target:Entity;
     protected var _thinkDuration:Number;
     protected var _thinkTimer:Alarm;
+    protected var _wander:Boolean;
+    protected var _wanderAngle:Number;
+    protected var _wanderCollideAngle:Number;
     
     function Monster() {
       super(0, 0);
@@ -24,6 +29,8 @@ package {
       layer = Layers.MONSTERS;
       setHitbox(Level.TILE, Level.TILE);
       centerOrigin();
+      
+      _collideTypes = ['trap', 'warrior', 'solid'];
       
       _image = Image.createRect(Level.TILE, Level.TILE, 0xffffff);
       _image.centerOO();
@@ -53,6 +60,10 @@ package {
       _thinkDuration = 0.5;
       _thinkTimer = new Alarm(0, onThink);
       addTween(_thinkTimer);
+      
+      _wander = false;
+      _wanderAngle = 0;
+      _wanderCollideAngle = 90;
     }
     
     protected function calcStats():void {
@@ -159,8 +170,40 @@ package {
       }
     }
     
-    protected function thinkMove():void {
-      
+    protected function thinkCollide(hit:Entity):Boolean {
+      if (hit.type === 'solid') {
+        _wanderAngle = FP.normalizeAngle(_wanderAngle + _wanderCollideAngle);
+      }
+      return true;
+    }
+    
+    protected function thinkMove():Boolean {
+      var moved:Boolean = false;
+      if (_target !== null) {
+        var level:Level = (world as Game).level;
+        var path:Path = level.grid.findPath(x, y, _target.x, _target.y);
+        while (path !== null) {
+          if (distanceToPoint(path.x, path.y) >= Level.TILE) {
+            moved = thinkMoveStep(path.x, path.y);
+            break;
+          }
+          path = path.next;
+        }
+      } else if (_wander) {
+        FP.angleXY(FP.point, _wanderAngle, Level.TILE, x, y);
+        moved = thinkMoveStep(FP.point.x, FP.point.y);
+      }
+      return moved;
+    }
+    
+    protected function thinkMoveStep(x:Number, y:Number):Boolean {
+      var hit:Entity = collideTypes(_collideTypes, x, y);
+      if (hit === null || !thinkCollide(hit)) {
+        moveTo(x, y);
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 }
