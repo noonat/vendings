@@ -1,5 +1,6 @@
 package {
   import flash.display.BitmapData;
+  import items.*;
   import net.flashpunk.Engine;
   import net.flashpunk.FP;
   import net.flashpunk.utils.Input;
@@ -50,7 +51,7 @@ package {
     }
     
     protected function loadLevelFinish(data:BitmapData, tileset:BitmapData):void {
-      FP.world = new Game(new Level(data, tileset));
+      FP.world = new Game(new Level(data, tileset), [WoodenSword]);
     }
     
     public function loadNextLevel():void {

@@ -3,6 +3,7 @@ package items {
     function WoodenSword() {
       super();
       stats.damage = 1;
+      itemName = 'Wooden Sword';
     }
   }
 }

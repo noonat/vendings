@@ -4,6 +4,7 @@ package {
   
   public class Item extends Entity {
     public var stats:Stats;
+    public var itemName:String;
     protected var _inventory:Inventory;
     
     function Item() {
@@ -12,6 +13,7 @@ package {
       setHitbox(8, 8, 4, 4);
       layer = Layers.ITEMS;
       type = 'item';
+      itemName = 'Item';
       stats = new Stats();
     }
     

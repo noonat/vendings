@@ -66,6 +66,7 @@ package {
       if (hit) {
         var treasure:Treasure = hit as Treasure;
         treasure.collected(this);
+        _wander = false;
       }
     }
   }
