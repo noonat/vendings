@@ -24,10 +24,10 @@ package {
     function Game(level:Level, itemClasses:Array) {
       state = new GameState(this);
       state.onGameWon.add(function():void {
-        trace('winnar!');
+        (FP.engine as Main).loadNextLevel();
       });
       state.onGameLost.add(function():void {
-        trace('you lost, broseph');
+        (FP.engine as Main).restartLevel();
       });
       
       add(this.level = level);
