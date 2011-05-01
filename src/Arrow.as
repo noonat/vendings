@@ -1,4 +1,5 @@
 package {
+  import items.WoodenShield;
   import net.flashpunk.components.Health;
   import net.flashpunk.Entity;
   import net.flashpunk.graphics.Image;
@@ -22,9 +23,12 @@ package {
     
     protected function onMotionFinished():void {
       if (_target !== null) {
-        var health:Health = _target.getComponent('health') as Health;
-        if (health !== null) {
-          health.hurt(isNaN(_damage) ? health.health : _damage, this);
+        var inventory:Inventory = _target.getComponent('inventory') as Inventory;
+        if (inventory === null || !inventory.hasType('shield')) {
+          var health:Health = _target.getComponent('health') as Health;
+          if (health !== null) {
+            health.hurt(isNaN(_damage) ? health.health : _damage, this);
+          }
         }
         target = null;
       }
