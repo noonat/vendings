@@ -82,11 +82,7 @@ package {
     }
     
     protected function canAttack(entity:Entity):Boolean {
-      if (entity === null) {
-        return false;
-      }
-      var health:Health = entity.getComponent('health') as Health;
-      if (health === null || health.dead) {
+      if (!canTarget(entity)) {
         return false;
       }
       var x:Number = this.x - originX;
@@ -104,6 +100,16 @@ package {
         return false;
       }
       return true;
+    }
+    
+    protected function canTarget(entity:Entity):Boolean {
+      if (entity !== null) {
+        var health:Health = entity.getComponent('health') as Health;
+        if (health === null || health.alive) {
+          return true
+        }
+      }
+      return false;
     }
     
     override public function created():void {
@@ -136,7 +142,7 @@ package {
     
     protected function onKilled(killer:Entity):void {
       collidable = false;
-      _color = 0x000000;
+      _color = 0x333333;
       _thinkTimer.reset(0);
     }
     
@@ -155,9 +161,7 @@ package {
     protected function think():void {
       thinkMove();
       thinkTriggers();
-      if (_target !== null) {
-        thinkAttack();
-      }
+      thinkAttack();
     }
     
     protected function thinkAttack():void {
@@ -195,7 +199,7 @@ package {
     
     protected function thinkMove():Boolean {
       var moved:Boolean = false;
-      if (_target !== null) {
+      if (canTarget(_target)) {
         var level:Level = (world as Game).level;
         var path:Path = level.grid.findPath(x, y, _target.x, _target.y);
         while (path !== null) {
