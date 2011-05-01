@@ -18,6 +18,7 @@ package {
     override public function created():void {
       super.created();
       _color = 0x00ff00;
+      _item = null;
     }
     
     protected function hitMonster(monster:Monster):void {
@@ -43,26 +44,38 @@ package {
     }
     
     override protected function think():void {
-      if (_item != null) {
-        var level:Level = (world as Game).level;
-        var treasure:Treasure = world.typeFirst('treasure') as Treasure;
-        var path:Path = level.grid.findPath(x, y, treasure.x, treasure.y);
-        while (path != null) {
-          var px:Number = path.x;
-          var py:Number = path.y;
-          if (distanceToPoint(path.x, path.y) >= Level.TILE) {
-            var hit:Entity = collideTypes(['monster', 'solid'], px, py);
-            if (hit == null) {
-              moveTo(px, py);
-            } else if (hit.type == 'monster') {
-              hitMonster(hit as Monster);
-            } else if (hit.type == 'solid') {
-              hitSolid(hit)
-            }
-            break;
+      if (_item == null) {
+        return;
+      }
+      var level:Level = (world as Game).level;
+      var goal:Entity = world.typeFirst('treasure');
+      if (goal == null) {
+        return;
+      }
+      var path:Path = level.grid.findPath(x, y, goal.x, goal.y);
+      while (path != null) {
+        var px:Number = path.x;
+        var py:Number = path.y;
+        if (distanceToPoint(path.x, path.y) >= Level.TILE) {
+          var hit:Entity = collideTypes(['monster', 'solid'], px, py);
+          if (hit == null) {
+            moveTo(px, py);
+          } else if (hit.type == 'monster') {
+            hitMonster(hit as Monster);
+          } else if (hit.type == 'solid') {
+            hitSolid(hit)
           }
-          path = path.next;
+          break;
         }
+        path = path.next;
+      }
+    }
+    
+    override public function update():void {
+      var hit:Entity = collide('treasure', x, y);
+      if (hit) {
+        var treasure:Treasure = hit as Treasure;
+        treasure.collected(this);
       }
     }
   }

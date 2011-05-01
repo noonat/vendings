@@ -11,5 +11,9 @@ package {
       layer = Layers.ITEMS;
       type = 'treasure';
     }
+    
+    public function collected(warrior:Warrior):void {
+      world.recycle(this);
+    }
   }
 }
