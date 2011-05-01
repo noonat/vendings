@@ -8,6 +8,7 @@ package {
       (graphic as Image).centerOO();
       setHitbox(Level.TILE, Level.TILE);
       centerOrigin();
+      layer = Layers.WARRIORS;
       type = 'vendor';
     }
   }

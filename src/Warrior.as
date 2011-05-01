@@ -16,10 +16,22 @@ package {
       (graphic as Image).centerOO();
       setHitbox(Level.TILE, Level.TILE);
       centerOrigin();
+      layer = Layers.WARRIORS;
       type = 'warrior';
-      _thinkDuration = 1;
+      _thinkDuration = 0.5;
       _thinkTimer = 0;
       addComponent('health', _health = new Health());
+    }
+    
+    protected function hitMonster(monster:Monster):void {
+      var health:Health = monster.getComponent('health') as Health;
+      if (health != null) {
+        health.hurt(1);
+      }
+    }
+    
+    protected function hitSolid(entity:Entity):void {
+      
     }
     
     public function get item():Item {
@@ -40,8 +52,17 @@ package {
         var treasure:Treasure = world.typeFirst('treasure') as Treasure;
         var path:Path = level.grid.findPath(x, y, treasure.x, treasure.y);
         while (path != null) {
+          var px:Number = path.x;
+          var py:Number = path.y;
           if (distanceToPoint(path.x, path.y) >= Level.TILE) {
-            moveTowards(path.x, path.y, Level.TILE, 'solid', true);
+            var hit:Entity = collideTypes(['monster', 'solid'], px, py);
+            if (hit == null) {
+              moveTo(px, py);
+            } else if (hit.type == 'monster') {
+              hitMonster(hit as Monster);
+            } else if (hit.type == 'solid') {
+              hitSolid(hit)
+            }
             break;
           }
           path = path.next;

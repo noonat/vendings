@@ -22,6 +22,7 @@ package {
     
     function Level(data:BitmapData, tileset:BitmapData) {
       type = 'solid';
+      layer = Layers.LEVEL;
       _entities = new Vector.<LevelEntity>();
       _tileset = tileset;
       graphic = tilemap = new Tilemap(tileset,
