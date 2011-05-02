@@ -12,7 +12,8 @@ package {
     protected var _buttons:Vector.<Button>;
     protected var _items:Vector.<Item>;
     protected var _rect:Rectangle;
-    protected var _text:Text;
+    protected var _text1:Text;
+    protected var _text2:Text;
     
     function VendorMenu(itemClasses:Array, x:Number, y:Number) {
       super(x, y, 1, 1);
@@ -30,13 +31,21 @@ package {
       }
       createButtons();
       
-      _text = new Text('choose');
-      _text.size = 8;
-      _text.alpha = 0.3;
-      _text.x = 0;
-      _text.y = Level.TILE * 2;
-      _text.centerOO();
-      graphic = _text;
+      _text1 = new Text('click item to choose');
+      _text1.size = 8;
+      _text1.alpha = 0.3;
+      _text1.x = 0;
+      _text1.y = Level.TILE * 2.5;
+      _text1.centerOO();
+      addGraphic(_text1);
+
+      _text2 = new Text('you can add more warriors');
+      _text2.size = 8;
+      _text2.alpha = 0.3;
+      _text2.x = 0;
+      _text2.y = _text1.y + _text1.height + 2;
+      _text2.centerOO();
+      addGraphic(_text2);
     }
     
     override public function added():void {
