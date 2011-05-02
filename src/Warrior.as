@@ -54,7 +54,6 @@ package {
     override public function created():void {
       super.created();
       _boon = null;
-      _color = 0xffffff;
     }
     
     override protected function think():void {

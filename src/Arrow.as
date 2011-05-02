@@ -1,4 +1,5 @@
 package {
+  import flash.display.BitmapData;
   import items.WoodenShield;
   import net.flashpunk.components.Health;
   import net.flashpunk.Entity;
@@ -6,14 +7,23 @@ package {
   import net.flashpunk.tweens.motion.LinearMotion;
   
   public class Arrow extends Entity {
+    [Embed(source="../assets/arrow.png")]
+    static protected const IMAGE:Class;
+    
     protected var _damage:Number;
+    protected var _image:Image;
     protected var _motion:LinearMotion;
     protected var _target:Entity;
     
     function Arrow() {
-      super(0, 0, Image.createRect(2, 2, 0x00ffff));
-      (graphic as Image).centerOO();
-      setHitbox(2, 2, 1, 1);
+      super(0, 0);
+      Assets.getBitmap(IMAGE, function(bitmap:BitmapData):void {
+        _image = new Image(IMAGE);
+        _image.centerOO();
+        graphic = _image;
+      });
+      setHitbox(2, 2);
+      centerOrigin();
       active = true;
       layer = Layers.TRAPS;
       type = 'arrow';

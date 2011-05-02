@@ -1,4 +1,5 @@
 package {
+  import flash.display.BitmapData;
   import flash.geom.Rectangle;
   import net.flashpunk.Entity;
   import net.flashpunk.graphics.Image;
@@ -6,12 +7,21 @@ package {
   import net.flashpunk.World;
   
   public class Trap extends Entity {
+    [Embed(source="../assets/trap.png")]
+    static protected const IMAGE:Class;
+    
+    protected var _image:Image;
     protected var _triggers:Vector.<Trigger>;
     
     function Trap() {
-      super(0, 0, Image.createRect(8, 8, 0x00ffff));
-      (graphic as Image).centerOO();
-      setHitbox(8, 8, 4, 4);
+      super(0, 0);
+      Assets.getBitmap(IMAGE, function(bitmap:BitmapData):void {
+        _image = new Image(bitmap);
+        _image.centerOO();
+        graphic = _image;
+      })
+      setHitbox(Level.TILE, Level.TILE);
+      centerOrigin();
       layer = Layers.ITEMS;
       type = 'trap';
       _triggers = new Vector.<Trigger>();

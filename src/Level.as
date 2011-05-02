@@ -11,7 +11,7 @@ package {
     static protected const COLOR_SOLID:uint = 0xff000000;
     static protected const COLOR_VENDOR:uint = 0xffff0000;
     static protected const COLOR_WARRIOR:uint = 0xff00ff00;
-    static protected const COLOR_MONSTER:uint = 0xff0000ff;
+    static protected const COLOR_SKELETON:uint = 0xff0000ff;
     static protected const COLOR_TREASURE:uint = 0xffffff00;
     static protected const COLOR_ARROW_TRAP:uint = 0xff00ffff;
     static protected const DATA_TILE:uint = 8;
@@ -65,8 +65,8 @@ package {
               _entities.push(new LevelEntity(Warrior, x, y));
               break;
             
-            case COLOR_MONSTER:
-              _entities.push(new LevelEntity(Monster, x, y));
+            case COLOR_SKELETON:
+              _entities.push(new LevelEntity(Skeleton, x, y));
               break;
             
             case COLOR_TREASURE:

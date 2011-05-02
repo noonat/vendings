@@ -33,10 +33,6 @@ package {
       
       _collideTypes = ['warrior', 'solid'];
       
-      _image = Image.createRect(Level.TILE, Level.TILE, 0xffffff);
-      _image.centerOO();
-      graphic = _image;
-      
       stats = new Stats();
       _baseStats = new Stats();
       _baseStats.damage = 1;
@@ -119,7 +115,7 @@ package {
     override public function created():void {
       super.created();
       collidable = true;
-      _color = 0x0000ff;
+      _color = 0xffffff;
       _hits.length = 0;
       _hurtTimer.reset(0.01);
       _justBlocked = false;
@@ -137,7 +133,9 @@ package {
     }
     
     protected function onHurtFinished():void {
-      _image.color = _color;
+      if (_image !== null) {
+        _image.color = _color;
+      }
     }
     
     protected function onItemAdded(item:Item):void {
@@ -160,7 +158,7 @@ package {
     }
     
     override public function render():void {
-      if (_hurtTimer.active) {
+      if (_image !== null && _hurtTimer.active) {
         _image.color = FP.colorLerp(_color, 0xff0000, 1.0 - _hurtTimer.percent)
       }
       super.render();
