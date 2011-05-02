@@ -8,9 +8,11 @@ package {
     protected var _inventory:Inventory;
     
     function Item() {
-      super(0, 0, Image.createRect(8, 8, 0x00ffff));
-      (graphic as Image).centerOO();
-      setHitbox(8, 8, 4, 4);
+      super(0, 0);
+      setHitbox(Level.TILE, Level.TILE);
+      centerOrigin();
+      ++originX;
+      ++width;
       layer = Layers.ITEMS;
       type = 'item';
       itemName = 'Item';

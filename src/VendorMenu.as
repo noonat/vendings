@@ -1,6 +1,7 @@
 package {
   import flash.geom.Rectangle;
   import net.flashpunk.FP;
+  import net.flashpunk.graphics.Text;
   import net.flashpunk.Signal;
   import net.flashpunk.World;
   import net.flashpunk.utils.Draw;
@@ -11,6 +12,7 @@ package {
     protected var _buttons:Vector.<Button>;
     protected var _items:Vector.<Item>;
     protected var _rect:Rectangle;
+    protected var _text:Text;
     
     function VendorMenu(itemClasses:Array, x:Number, y:Number) {
       super(x, y, 1, 1);
@@ -22,9 +24,19 @@ package {
       _buttons = new Vector.<Button>();
       _items = new Vector.<Item>();
       for each (var cls:Class in itemClasses) {
-        _items.push(new cls() as Item);
+        var item:Item = new cls() as Item;
+        item.layer = Layers.MENU_BUTTON;
+        _items.push(item);
       }
       createButtons();
+      
+      _text = new Text('choose');
+      _text.size = 8;
+      _text.alpha = 0.3;
+      _text.x = 0;
+      _text.y = Level.TILE * 2;
+      _text.centerOO();
+      graphic = _text;
     }
     
     override public function added():void {
@@ -59,7 +71,7 @@ package {
         item.x += _rect.x;
         item.y += _rect.y;
       }
-      _rect.inflate(Level.TILE, Level.TILE);
+      _rect.inflate(Level.TILE / 2, Level.TILE / 2);
       setHitbox(_rect.width, _rect.height);
     }
     
@@ -86,7 +98,12 @@ package {
     }
     
     override public function render():void {
-      Draw.rect(_rect.x, _rect.y, _rect.width, _rect.height, 0xff0000, 0.1);
+      Draw.rect(_rect.x, _rect.y, _rect.width, _rect.height, 0x111111);
+      for each (var item:Item in _items) {
+        Draw.rect(
+          item.x - item.originX, item.y - item.originY,
+          item.width, item.height, 0xB294BB, 0.3);
+      }
       super.render();
     }
     

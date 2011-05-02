@@ -1,8 +1,10 @@
 package {
   import flash.display.BitmapData;
+  import flash.geom.Point;
   import net.flashpunk.components.Health;
   import net.flashpunk.Entity;
   import net.flashpunk.FP;
+  import net.flashpunk.Graphic;
   import net.flashpunk.graphics.Image;
   
   public class Warrior extends Monster {
@@ -12,6 +14,8 @@ package {
     protected var _boon:Item;
     protected var _wanderX:Number = 0;
     protected var _wanderY:Number = 0;
+    private var _camera:Point = new Point();
+    private var _point:Point = new Point();
     
     function Warrior() {
       super();
@@ -54,6 +58,24 @@ package {
     override public function created():void {
       super.created();
       _boon = null;
+    }
+    
+    override public function render():void {
+      super.render();
+      if (_health.alive && _boon !== null) {
+        var g:Graphic = _boon.graphic;
+        if (g && g.visible) {
+          if (g.relative) {
+            _point.x = x - 2;
+            _point.y = y - 1;
+          } else {
+            _point.x = _point.y = 0;
+          }
+          _camera.x = FP.camera.x;
+          _camera.y = FP.camera.y;
+          g.render(renderTarget ? renderTarget : FP.buffer, _point, _camera);
+        }
+      }
     }
     
     override protected function think():void {

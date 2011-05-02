@@ -33,7 +33,7 @@ package {
       add(this.level = level);
       level.createEntities(this);
       
-      _vendorMenu = new VendorMenu(itemClasses, FP.width / 2, FP.height - 16);
+      _vendorMenu = new VendorMenu(itemClasses, FP.width / 2, FP.height - 48);
       _vendorMenu.onItem.add(onVendorItem);
       _vendorMenu.show();
       add(_vendorMenu);
