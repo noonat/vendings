@@ -1,10 +1,14 @@
 package {
+  import flash.display.BitmapData;
   import net.flashpunk.components.Health;
   import net.flashpunk.Entity;
   import net.flashpunk.FP;
   import net.flashpunk.graphics.Image;
   
   public class Warrior extends Monster {
+    [Embed(source="../assets/warrior.png")]
+    static protected const IMAGE:Class;
+    
     protected var _boon:Item;
     protected var _wanderX:Number = 0;
     protected var _wanderY:Number = 0;
@@ -17,6 +21,11 @@ package {
       _baseStats.health = 3;
       _collideTypes = ['monster', 'trap', 'warrior', 'solid'];
       _thinkDuration = 0.5;
+      Assets.getBitmap(IMAGE, function(bitmap:BitmapData):void {
+        _image = new Image(bitmap);
+        _image.centerOO();
+        graphic = _image;
+      });
     }
     
     public function get boon():Item {
@@ -45,7 +54,7 @@ package {
     override public function created():void {
       super.created();
       _boon = null;
-      _color = 0x00ff00;
+      _color = 0xffffff;
     }
     
     override protected function think():void {

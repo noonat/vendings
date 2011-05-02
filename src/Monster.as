@@ -35,7 +35,7 @@ package {
       
       _image = Image.createRect(Level.TILE, Level.TILE, 0xffffff);
       _image.centerOO();
-      addGraphic(_image);
+      graphic = _image;
       
       stats = new Stats();
       _baseStats = new Stats();
@@ -63,9 +63,7 @@ package {
       addTween(_thinkTimer);
       
       _hits = [];
-      _justBlocked = false;
       _wander = false;
-      _wanderAngle = 0;
     }
     
     public function blocked(entity:Entity):void {
@@ -122,8 +120,12 @@ package {
       super.created();
       collidable = true;
       _color = 0x0000ff;
+      _hits.length = 0;
       _hurtTimer.reset(0.01);
+      _justBlocked = false;
+      _target = null;
       _thinkTimer.reset(0.01);
+      _wanderAngle = 0;
       calcStats();
     }
     

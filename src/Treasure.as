@@ -1,11 +1,21 @@
 package {
+  import flash.display.BitmapData;
   import net.flashpunk.Entity;
   import net.flashpunk.graphics.Image;
   
   public class Treasure extends Entity {
+    [Embed(source="../assets/treasure.png")]
+    static protected const IMAGE:Class;
+    
+    protected var _image:Image;
+    
     function Treasure() {
-      super(0, 0, Image.createRect(Level.TILE, Level.TILE, 0xffff00));
-      (graphic as Image).centerOO();
+      super(0, 0);
+      Assets.getBitmap(IMAGE, function(bitmap:BitmapData):void {
+        _image = new Image(IMAGE);
+        _image.centerOO();
+        graphic = _image;
+      });
       setHitbox(Level.TILE, Level.TILE);
       centerOrigin();
       layer = Layers.ITEMS;
