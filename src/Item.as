@@ -5,6 +5,8 @@ package {
   public class Item extends Entity {
     public var stats:Stats;
     public var itemName:String;
+    public var offsetX:Number;
+    public var offsetY:Number;
     protected var _inventory:Inventory;
     
     function Item() {

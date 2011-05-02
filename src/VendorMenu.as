@@ -59,11 +59,11 @@ package {
         button.layer = Layers.MENU_BUTTON;
         button.onClicked.add(onItemClicked);
         _buttons.push(button);
-        item.x = ix + item.originX;
-        item.y = iy + item.originY;
-        ix += item.width + Level.TILE;
-        _rect.width = Math.max(_rect.width, item.right);
-        _rect.height = Math.max(_rect.height, item.bottom);
+        item.x = ix + item.originX + 1;
+        item.y = iy + item.originY + 1;
+        ix += item.width + 2 + Level.TILE;
+        _rect.width = Math.max(_rect.width, item.right + 1);
+        _rect.height = Math.max(_rect.height, item.bottom + 1);
       }
       _rect.x = x - (_rect.width / 2);
       _rect.y = y - (_rect.height / 2);
@@ -101,8 +101,8 @@ package {
       Draw.rect(_rect.x, _rect.y, _rect.width, _rect.height, 0x111111);
       for each (var item:Item in _items) {
         Draw.rect(
-          item.x - item.originX, item.y - item.originY,
-          item.width, item.height, 0xB294BB, 0.3);
+          item.x - item.originX - 1, item.y - item.originY - 1,
+          item.width + 2, item.height + 2, 0xB294BB, 0.3);
       }
       super.render();
     }

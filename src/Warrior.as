@@ -66,8 +66,8 @@ package {
         var g:Graphic = _boon.graphic;
         if (g && g.visible) {
           if (g.relative) {
-            _point.x = x - 2;
-            _point.y = y - 1;
+            _point.x = x + _boon.offsetX;
+            _point.y = y + _boon.offsetY;
           } else {
             _point.x = _point.y = 0;
           }

@@ -18,6 +18,8 @@ package items {
       type = 'sword';
       stats.damage = 1;
       itemName = 'Wooden Sword';
+      offsetX = -2;
+      offsetY = -1;
     }
   }
 }

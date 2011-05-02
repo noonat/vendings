@@ -17,6 +17,8 @@ package items {
       });
       type = 'shield';
       itemName = 'Wooden Shield';
+      offsetX = -2;
+      offsetY = 0;
     }
   }
 }
