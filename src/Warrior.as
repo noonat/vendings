@@ -21,6 +21,8 @@ package {
       super();
       type = 'warrior';
       layer = Layers.WARRIORS;
+      collidable = false;
+      visible = false;
       _baseStats.damage = 1;
       _baseStats.health = 3;
       _collideTypes = ['monster', 'trap', 'warrior', 'solid'];
@@ -44,9 +46,14 @@ package {
         _boon = value;
         if (_boon !== null) {
           _inventory.add(_boon);
+          collidable = true;
+          visible = true;
           beginWander();
+        } else {
+          collidable = false;
+          visible = false;
+          _wander = false;
         }
-        onThink();
       }
     }
     
@@ -57,7 +64,7 @@ package {
     
     override public function created():void {
       super.created();
-      _boon = null;
+      boon = null;
     }
     
     override public function render():void {
