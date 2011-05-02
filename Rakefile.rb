@@ -19,7 +19,7 @@ namespace :game do
   
   desc "Build the release version of the game"
   task :release => 'bin/game.swf'
-  file 'bin/flashpunk.swc' => [:sounds] + src_files do
+  file 'bin/game.swf' => [:sounds] + src_files do
     mxmlc 'src/Main.as', 'bin/game.swf', mxmlc_opts({
       :debug => false,
       :source_paths => ['lib/flashpunk', 'src']
