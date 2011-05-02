@@ -6,7 +6,7 @@ package {
   import net.flashpunk.utils.Input;
   import net.flashpunk.utils.Key;
   
-  [SWF(width="512", height="384", backgroundColor="#000000")]
+  [SWF(width="768", height="576", backgroundColor="#000000")]
   public class Main extends Engine {
     [Embed(source="../assets/level_1.png")]
     static protected const LEVEL_1:Class;
@@ -30,8 +30,7 @@ package {
     
     function Main() {
       super(256, 192, 60);
-      FP.screen.scale = 2;
-      // FP.console.enable();
+      FP.screen.scale = 3;
     }
     
     override public function init():void {
